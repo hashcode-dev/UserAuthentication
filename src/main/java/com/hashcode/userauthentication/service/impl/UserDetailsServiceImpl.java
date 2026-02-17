@@ -33,5 +33,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .password(userCredentials.getPassword())
                 .roles(userCredentials.getRoles().stream().map(Enum::name).toArray(String[]::new))
                 .build();
+
     }
 }
