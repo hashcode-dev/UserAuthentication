@@ -1,7 +1,7 @@
 package com.hashcode.userauthentication.service;
 
-import com.hashcode.userauthentication.model.UserCredentials;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UserCredentialsService {
-    public UserCredentials findByUserName(String username);
+    public UserDetails findByUserName(String username);
 }
