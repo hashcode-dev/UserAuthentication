@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Getter
@@ -23,6 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         UserCredentials userCredentials = getUserCredentialsRepository().findByUsername(username)
@@ -31,7 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return User.builder()
                 .username(userCredentials.getUsername())
                 .password(userCredentials.getPassword())
-                .roles(userCredentials.getRoles().stream().map(Enum::name).toArray(String[]::new))
+                .roles(userCredentials.getRoles().toArray(String[]::new))
                 .build();
 
     }
