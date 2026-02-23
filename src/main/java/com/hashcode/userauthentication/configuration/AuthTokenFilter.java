@@ -30,10 +30,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         this.jwtUtil = jwtUtil;
     }
 
-    public AuthTokenFilter() {
-
-    }
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -56,7 +52,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
-        return path.equals("/api/auth/signup") || path.equals("/api/auth/signin") || path.equals("/api/auth/roles") || path.equals("/api/auth/createUserRoles");
+        return path.equals("/api/auth/signup") || path.equals("/api/auth/signin");
     }
 
     private String parseJwt(HttpServletRequest request) {
