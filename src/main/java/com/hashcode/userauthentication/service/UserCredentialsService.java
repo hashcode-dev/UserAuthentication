@@ -8,9 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UserCredentialsService {
-    public UserDetails findByUserName(String username);
-    public JwtResponse login(UserCredentials userCredentials);
-    public ResponseEntity<?> signUp(UserCredentials userCredentials);
-    public ResponseEntity<?> getAllUserRoles();
-    public ResponseEntity<?> createUserRoles(UserRole userRole);
+    UserDetails findByUserName(String username);
+    JwtResponse login(UserCredentials userCredentials);
+    ResponseEntity<?> signUp(UserCredentials userCredentials);
+    ResponseEntity<?> getAllUserRoles();
+    ResponseEntity<?> createUserRoles(UserRole userRole);
 }
