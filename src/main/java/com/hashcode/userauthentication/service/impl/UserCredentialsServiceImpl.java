@@ -134,4 +134,11 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
     public ResponseEntity<?> createUserRoles(UserRole userRole) {
         return ResponseEntity.ok(getUserRoleRepository().save(userRole));
     }
+
+    @Override
+    public ResponseEntity<?> isTokenValid(String token) {
+        String username = getJwtUtil().getUsernameFromToken(token);
+        UserDetails userDetails = findByUserName(username);
+        return ResponseEntity.ok(getJwtUtil().validateToken(token, userDetails));
+    }
 }

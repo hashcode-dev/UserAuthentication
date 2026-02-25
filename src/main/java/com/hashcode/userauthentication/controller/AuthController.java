@@ -39,4 +39,9 @@ public class AuthController {
     public ResponseEntity<?> createUserRoles(@RequestBody UserRole userRole) {
         return getUserCredentialsService().createUserRoles(userRole);
     }
+
+    @PostMapping("/isTokenValid")
+    public ResponseEntity<?> isTokenValid(@RequestBody JwtResponse jwtResponse) {
+        return getUserCredentialsService().isTokenValid(jwtResponse.getToken());
+    }
 }

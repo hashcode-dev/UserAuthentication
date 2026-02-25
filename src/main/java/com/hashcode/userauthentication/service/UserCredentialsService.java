@@ -13,4 +13,5 @@ public interface UserCredentialsService {
     ResponseEntity<?> signUp(UserCredentials userCredentials);
     ResponseEntity<?> getAllUserRoles();
     ResponseEntity<?> createUserRoles(UserRole userRole);
+    ResponseEntity<?> isTokenValid(String token);
 }
