@@ -19,7 +19,7 @@ public class JWTUtil {
 	private static final long serialVersionUID = -2550185165626007488L;
 
 	@Value("${user.authentication.jwt.secret}")
-	private String jwtSecret = "jwt-secret";
+	private String jwtSecret;
 
 	@Value("${user.authentication.jwt.expiration}")
 	private int jwtExpirationMs;

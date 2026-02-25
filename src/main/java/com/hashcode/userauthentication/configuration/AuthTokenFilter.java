@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,22 +32,31 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
+
+            if (!StringUtils.hasText(jwt)) {
+                sendUnauthorizedResponse(response, "Invalid access token: " + "No token provided");
+                return;
+            }
+
             String username = getJwtUtil().getUsernameFromToken(jwt);
             UserDetails userDetails = getUserDetailsService().loadUserByUsername(username);
 
-            if (jwt != null && getJwtUtil().validateToken(jwt, userDetails)) {
+            if (getJwtUtil().validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
                         userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                filterChain.doFilter(request, response);
+            } else {
+                sendUnauthorizedResponse(response, "Invalid JWT token");
             }
         } catch (Exception e) {
             logger.error("Cannot set user authentication: [{}]", e);
+            sendUnauthorizedResponse(response, "Invalid access token: " + e.getMessage());
         }
-        filterChain.doFilter(request, response);
     }
 
     @Override
@@ -61,5 +71,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             return headerAuth.substring(7);
         }
         return null;
+    }
+
+    private void sendUnauthorizedResponse(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.getWriter().write("{\"status\": 401, \"error\": \"Unauthorized\", \"message\": \"" + message + "\"}");
+        response.getWriter().flush();
     }
 }
